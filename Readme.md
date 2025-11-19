@@ -2,10 +2,6 @@
 
 This is an [Astro](https://astro.build) project demonstrating various Astro features and capabilities. This template showcases server-side rendering, API routes, content collections, framework integrations, and more.
 
-## Demo
-
-Live Demo: [https://astro-template.edgeone.run](https://astro-template.edgeone.run)
-
 ## 📚 Features Demonstrated
 
 This project includes several example pages that demonstrate different Astro capabilities:
