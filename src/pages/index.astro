@@ -14,7 +14,12 @@ const formattedTime = renderTime.toLocaleString("en-US", {
   hour12: false,
 });
 
-const headers = Object.fromEntries(Astro.request.headers);
+const headers = Object.fromEntries(
+  Array.from(Astro.request.headers.entries()).filter(([key]) => key !== 'x-scf-private-environment')
+);
+
+// 尝试获取本地上下文信息，EdgeOne 的 request.eo 可能在这里
+const localsInfo = JSON.stringify(Astro.locals || {}, null, 2);
 ---
 
 <Layout title="Welcome to Astro.">
@@ -27,6 +32,13 @@ const headers = Object.fromEntries(Astro.request.headers);
       <strong>Server Render Time:</strong>
       <span class="render-time">{formattedTime}</span>
     </p>
+
+    <!-- Debug Info for Locals -->
+    <div class="instructions" style="margin-top: 1rem; border-color: #da62c4;">
+      <strong>Astro.locals (Debug):</strong>
+      <pre style="overflow-x: auto; white-space: pre-wrap; font-size: 0.8em;">{localsInfo}</pre>
+    </div>
+
     <ul role="list" class="link-card-grid">
       <Card
         href="https://docs.astro.build/"
