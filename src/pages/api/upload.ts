@@ -1,8 +1,25 @@
 import type { APIRoute } from 'astro';
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 
-export const POST: APIRoute = async ({ request }) => {
+export const POST: APIRoute = async (context) => {
   try {
+    const { request } = context;
+    const requestAny = request as any;
+
+    // Debug: Log context keys and potential geo info
+    console.log('API Context Keys:', Object.keys(context));
+    // Astro 本身的 context 通常不包含 geo，但在某些适配器中可能会直接注入到 locals 或 request 上
+    console.log('Astro.locals:', JSON.stringify(context.locals || {}, null, 2));
+
+    // 检查是否有 EdgeOne 特有的属性注入到 context 或 request
+    const contextAny = context as any;
+    if (contextAny.geo) {
+      console.log('Found context.geo:', JSON.stringify(contextAny.geo, null, 2));
+    }
+    if (requestAny.eo) {
+      console.log('Found request.eo:', JSON.stringify(requestAny.eo, null, 2));
+    }
+
     const formData = await request.formData();
     const file = formData.get('file') as File;
 
