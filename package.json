@@ -16,6 +16,7 @@
     "@astrojs/svelte": "^7.2.1",
     "@astrojs/vercel": "^9.0.0",
     "@astrojs/vue": "^5.1.2",
+    "@aws-sdk/client-s3": "^3.972.0",
     "@edgeone/astro": "^1.0.2",
     "astro": "^5.15.3",
     "marked": "^16.4.1",
@@ -29,4 +30,3 @@
     "commander": "^14.0.2"
   }
 }
-
