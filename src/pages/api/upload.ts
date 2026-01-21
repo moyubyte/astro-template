@@ -53,9 +53,9 @@ export const POST: APIRoute = async ({ request }) => {
 
     const publicUrl = `${publicDomain}/${key}`;
 
-    return new Response(JSON.stringify({ 
-      message: 'Upload successful', 
-      url: publicUrl 
+    return new Response(JSON.stringify({
+      message: 'Upload successful',
+      url: publicUrl
     }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },
@@ -63,9 +63,9 @@ export const POST: APIRoute = async ({ request }) => {
 
   } catch (error: any) {
     console.error('Upload error:', error);
-    return new Response(JSON.stringify({ 
-      message: 'Upload failed', 
-      error: error.message 
+    return new Response(JSON.stringify({
+      message: 'Upload failed',
+      error: error.message
     }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' },

@@ -20,6 +20,11 @@ const headers = Object.fromEntries(
 
 // 尝试获取本地上下文信息，EdgeOne 的 request.eo 可能在这里
 const localsInfo = JSON.stringify(Astro.locals || {}, null, 2);
+
+// 尝试直接从 request 对象获取 eo 信息 (类型转换以绕过 TS 检查)
+// 注意：在开发环境 (npm run dev) 下这通常是 undefined
+const requestAny = Astro.request as any;
+const eoInfo = requestAny.eo ? JSON.stringify(requestAny.eo, null, 2) : "request.eo is undefined";
 ---
 
 <Layout title="Welcome to Astro.">
@@ -35,8 +40,14 @@ const localsInfo = JSON.stringify(Astro.locals || {}, null, 2);
 
     <!-- Debug Info for Locals -->
     <div class="instructions" style="margin-top: 1rem; border-color: #da62c4;">
-      <strong>Astro.locals (Debug):</strong>
+      <strong>Astro.locals:</strong>
       <pre style="overflow-x: auto; white-space: pre-wrap; font-size: 0.8em;">{localsInfo}</pre>
+    </div>
+
+    <!-- Debug Info for Request.eo -->
+    <div class="instructions" style="margin-top: 1rem; border-color: #4f39fa;">
+      <strong>request.eo:</strong>
+      <pre style="overflow-x: auto; white-space: pre-wrap; font-size: 0.8em;">{eoInfo}</pre>
     </div>
 
     <ul role="list" class="link-card-grid">
