@@ -92,10 +92,28 @@ const eoInfo = requestAny.eo ? JSON.stringify(requestAny.eo, null, 2) : "request
       </form>
       <div id="upload-result" style="display: none;"></div>
     </div>
+    
+    <div class="headers-section" id="geo-section" style="display: none;">
+        <h2>Geolocation (via /api/geo)</h2>
+        <pre id="geo-data" style="overflow-x: auto; white-space: pre-wrap; font-size: 0.8em; color: var(--accent-light);"></pre>
+    </div>
   </main>
 </Layout>
 
 <script>
+  // Fetch Geolocation on load
+  fetch('/api/geo')
+    .then(res => res.json())
+    .then(data => {
+        const geoSection = document.getElementById('geo-section');
+        const geoData = document.getElementById('geo-data');
+        if (geoSection && geoData) {
+            geoSection.style.display = 'block';
+            geoData.textContent = JSON.stringify(data, null, 2);
+        }
+    })
+    .catch(err => console.error('Failed to fetch geo:', err));
+
   const form = document.getElementById('upload-form');
   const fileInput = document.getElementById('file-input') as HTMLInputElement;
   const resultDiv = document.getElementById('upload-result');
