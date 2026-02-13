@@ -1,0 +1,46 @@
+---
+import Layout from "../layouts/Layout.astro";
+import CsvUploader from "../components/CsvUploader";
+---
+
+<Layout title="CSV Viewer">
+    <main>
+        <h1>CSV <span class="text-gradient">Viewer</span></h1>
+        <div class="uploader-wrapper">
+            <CsvUploader client:load />
+        </div>
+    </main>
+</Layout>
+
+<style>
+    main {
+        margin: auto;
+        padding: 1.5rem;
+        max-width: 1200px;
+    }
+
+    h1 {
+        font-size: 3rem;
+        font-weight: 800;
+        margin: 0 0 2rem 0;
+        text-align: center;
+    }
+
+    .text-gradient {
+        background-image: var(--accent-gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-size: 400%;
+        background-position: 0%;
+    }
+
+    .uploader-wrapper {
+        background: white;
+        padding: 2rem;
+        border-radius: 1rem;
+        box-shadow:
+            0 4px 6px -1px rgba(0, 0, 0, 0.1),
+            0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        min-height: 400px;
+    }
+</style>
