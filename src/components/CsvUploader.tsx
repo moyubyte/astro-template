@@ -17,13 +17,13 @@ const CsvUploader: React.FC = () => {
         Papa.parse(file, {
             header: true,
             skipEmptyLines: true,
-            complete: (results) => {
+            complete: (results: any) => {
                 if (results.meta.fields) {
                     setHeaders(results.meta.fields);
                 }
                 setData(results.data);
             },
-            error: (err) => {
+            error: (err: any) => {
                 console.error('Error parsing CSV:', err);
                 setError('Error parsing CSV file: ' + err.message);
             }

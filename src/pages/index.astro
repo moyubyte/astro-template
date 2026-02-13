@@ -15,7 +15,9 @@ const formattedTime = renderTime.toLocaleString("en-US", {
 });
 
 const headers = Object.fromEntries(
-  Array.from(Astro.request.headers.entries()).filter(([key]) => key !== 'x-scf-private-environment')
+  Array.from(Astro.request.headers.entries()).filter(
+    ([key]) => key !== "x-scf-private-environment",
+  ),
 );
 
 // 尝试获取本地上下文信息，EdgeOne 的 request.eo 可能在这里
@@ -24,7 +26,9 @@ const localsInfo = JSON.stringify(Astro.locals || {}, null, 2);
 // 尝试直接从 request 对象获取 eo 信息 (类型转换以绕过 TS 检查)
 // 注意：在开发环境 (npm run dev) 下这通常是 undefined
 const requestAny = Astro.request as any;
-const eoInfo = requestAny.eo ? JSON.stringify(requestAny.eo, null, 2) : "request.eo is undefined";
+const eoInfo = requestAny.eo
+  ? JSON.stringify(requestAny.eo, null, 2)
+  : "request.eo is undefined";
 ---
 
 <Layout title="Welcome to Astro.">
@@ -41,13 +45,15 @@ const eoInfo = requestAny.eo ? JSON.stringify(requestAny.eo, null, 2) : "request
     <!-- Debug Info for Locals -->
     <div class="instructions" style="margin-top: 1rem; border-color: #da62c4;">
       <strong>Astro.locals:</strong>
-      <pre style="overflow-x: auto; white-space: pre-wrap; font-size: 0.8em;">{localsInfo}</pre>
+      <pre
+        style="overflow-x: auto; white-space: pre-wrap; font-size: 0.8em;">{localsInfo}</pre>
     </div>
 
     <!-- Debug Info for Request.eo -->
     <div class="instructions" style="margin-top: 1rem; border-color: #4f39fa;">
       <strong>request.eo:</strong>
-      <pre style="overflow-x: auto; white-space: pre-wrap; font-size: 0.8em;">{eoInfo}</pre>
+      <pre
+        style="overflow-x: auto; white-space: pre-wrap; font-size: 0.8em;">{eoInfo}</pre>
     </div>
 
     <ul role="list" class="link-card-grid">
@@ -72,76 +78,87 @@ const eoInfo = requestAny.eo ? JSON.stringify(requestAny.eo, null, 2) : "request
         body="Come say hi to our amazing Discord community. ❤️"
       />
     </ul>
-    
+
     <div class="headers-section">
       <h2>Request Headers</h2>
       <ul class="headers-list">
-        {Object.entries(headers).map(([key, value]) => (
-          <li>
-            <span class="header-key">{key}:</span> {value}
-          </li>
-        ))}
+        {
+          Object.entries(headers).map(([key, value]) => (
+            <li>
+              <span class="header-key">{key}:</span> {value}
+            </li>
+          ))
+        }
       </ul>
     </div>
 
     <div class="upload-section">
       <h2>Upload Image to S3</h2>
       <form id="upload-form" class="upload-form">
-        <input type="file" id="file-input" class="file-input" accept="image/*" required />
+        <input
+          type="file"
+          id="file-input"
+          class="file-input"
+          accept="image/*"
+          required
+        />
         <button type="submit" class="upload-btn">Upload</button>
       </form>
       <div id="upload-result" style="display: none;"></div>
     </div>
-    
+
     <div class="headers-section" id="geo-section" style="display: none;">
-        <h2>Geolocation (via /api/geo)</h2>
-        <pre id="geo-data" style="overflow-x: auto; white-space: pre-wrap; font-size: 0.8em; color: var(--accent-light);"></pre>
+      <h2>Geolocation (via /api/geo)</h2>
+      <pre
+        id="geo-data"
+        style="overflow-x: auto; white-space: pre-wrap; font-size: 0.8em; color: var(--accent-light);">
+      </pre>
     </div>
   </main>
 </Layout>
 
 <script>
   // Fetch Geolocation on load
-  fetch('/api/geo')
-    .then(res => res.json())
-    .then(data => {
-        const geoSection = document.getElementById('geo-section');
-        const geoData = document.getElementById('geo-data');
-        if (geoSection && geoData) {
-            geoSection.style.display = 'block';
-            geoData.textContent = JSON.stringify(data, null, 2);
-        }
+  fetch("/api/geo")
+    .then((res) => res.json())
+    .then((data) => {
+      const geoSection = document.getElementById("geo-section");
+      const geoData = document.getElementById("geo-data");
+      if (geoSection && geoData) {
+        geoSection.style.display = "block";
+        geoData.textContent = JSON.stringify(data, null, 2);
+      }
     })
-    .catch(err => console.error('Failed to fetch geo:', err));
+    .catch((err) => console.error("Failed to fetch geo:", err));
 
-  const form = document.getElementById('upload-form');
-  const fileInput = document.getElementById('file-input') as HTMLInputElement;
-  const resultDiv = document.getElementById('upload-result');
-  const submitBtn = form?.querySelector('button');
+  const form = document.getElementById("upload-form");
+  const fileInput = document.getElementById("file-input") as HTMLInputElement;
+  const resultDiv = document.getElementById("upload-result");
+  const submitBtn = form?.querySelector("button");
 
-  form?.addEventListener('submit', async (e) => {
+  form?.addEventListener("submit", async (e) => {
     e.preventDefault();
-    
+
     if (!fileInput.files || fileInput.files.length === 0) return;
-    
+
     const file = fileInput.files[0];
     const formData = new FormData();
-    formData.append('file', file);
-    
+    formData.append("file", file);
+
     if (submitBtn) {
       submitBtn.disabled = true;
-      submitBtn.textContent = 'Uploading...';
+      submitBtn.textContent = "Uploading...";
     }
-    
+
     if (resultDiv) {
-      resultDiv.style.display = 'none';
-      resultDiv.textContent = '';
-      resultDiv.style.color = 'white';
+      resultDiv.style.display = "none";
+      resultDiv.textContent = "";
+      resultDiv.style.color = "white";
     }
 
     try {
-      const response = await fetch('/api/upload', {
-        method: 'POST',
+      const response = await fetch("/api/upload", {
+        method: "POST",
         body: formData,
       });
 
@@ -149,22 +166,22 @@ const eoInfo = requestAny.eo ? JSON.stringify(requestAny.eo, null, 2) : "request
 
       if (response.ok) {
         if (resultDiv) {
-          resultDiv.style.display = 'block';
+          resultDiv.style.display = "block";
           resultDiv.innerHTML = `<strong>Success!</strong><br><a href="${data.url}" target="_blank" style="color: #4f39fa;">${data.url}</a>`;
         }
       } else {
-        throw new Error(data.message || 'Upload failed');
+        throw new Error(data.message || "Upload failed");
       }
     } catch (error: any) {
       if (resultDiv) {
-        resultDiv.style.display = 'block';
-        resultDiv.style.color = '#ff6b6b';
+        resultDiv.style.display = "block";
+        resultDiv.style.color = "#ff6b6b";
         resultDiv.textContent = `Error: ${error.message}`;
       }
     } finally {
       if (submitBtn) {
         submitBtn.disabled = false;
-        submitBtn.textContent = 'Upload';
+        submitBtn.textContent = "Upload";
       }
     }
   });
@@ -247,7 +264,8 @@ const eoInfo = requestAny.eo ? JSON.stringify(requestAny.eo, null, 2) : "request
     padding: 0;
   }
 
-  .headers-section, .upload-section {
+  .headers-section,
+  .upload-section {
     margin-top: 2rem;
     padding: 1.5rem;
     border-radius: 0.5rem;
@@ -255,7 +273,8 @@ const eoInfo = requestAny.eo ? JSON.stringify(requestAny.eo, null, 2) : "request
     border: 1px solid rgba(var(--accent-light), 25%);
   }
 
-  .headers-section h2, .upload-section h2 {
+  .headers-section h2,
+  .upload-section h2 {
     margin-top: 0;
     color: rgb(var(--accent-light));
   }
